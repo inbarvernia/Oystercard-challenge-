@@ -1,19 +1,25 @@
 require 'oystercard'
 # challenge 3: I want to my card to have a balance
 describe Oystercard do
-  card = Oystercard.new
-
+  # card = Oystercard.new
+  let(:card) { Oystercard.new }
   it 'creates a new card with a balance of 0' do
     expect(card.balance).to eq(0)
   end
 # challenge 5: I want to top up my card
   it 'tops up the balance of the card' do
-    allow(card).to receive(:balance) { 0 }
+    # allow(card).to receive(:balance) { 0 }
     expect(card.top_up(5)).to eq(5)
   end
 # challenge 6: I want a maximum amount
   it 'has a maximum balance of £90' do
     expect { card.top_up(91) }.to raise_error 'Maximum balance reached'
+  end
+  # challenge 7
+  it 'deducts an amount from the balance of the card' do
+    # allow(card).to receive(:balance) { 50 }
+     card.top_up(50)
+    expect { card.deduct(25) }.to change { card.balance }.by(-25)
   end
 
 end

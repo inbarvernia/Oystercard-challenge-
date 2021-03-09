@@ -3,7 +3,7 @@ class Oystercard
   DEFAULT_BALANCE = 0
   MINIMUM_BALANCE = 1
   CARD_LIMIT = 90
-
+  MINIMUM_FARE = 1
   def initialize
     @balance = DEFAULT_BALANCE
     @in_journey = false
@@ -24,13 +24,14 @@ class Oystercard
   end
 
   def touch_in
-    fail "Balance below minimum." if @balance < MINIMUM_BALANCE 
+    fail "Balance below minimum." if @balance < MINIMUM_BALANCE
     @in_journey = true
     "Touched in successfully"
   end
 
   def touch_out
     @in_journey = false
+    @balance -= MINIMUM_FARE  
     "Touched out successfully"
   end
 end

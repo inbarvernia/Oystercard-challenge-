@@ -45,7 +45,7 @@ describe Oystercard do
         card.top_up(5)
         expect(card.touch_in).to eq("Touched in successfully")
       end
-    end 
+    end
     #Challenge 9
     context 'when below the minimum balance' do
       it "raises an error when you touch in" do
@@ -55,14 +55,25 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
+      # card.top_up(5)
+      #let(:used_card) { Oystercard.new.top_up(5).touch_in }
+
     it 'sets in_journey? to false' do
+      # active_card.touch_in
       card.top_up(5)
       card.touch_in
       card.touch_out
       expect(card.in_journey?).to eq(false)
     end
     it 'returns touch-out confirmation' do
+      card.top_up(5)
+      card.touch_in
       expect(card.touch_out).to eq("Touched out successfully")
     end
+     it "deducts fare from balance" do
+       card.top_up(5)
+       card.touch_in
+       expect { card.touch_out }.to change { card.balance }.by(-1)
+     end
   end
 end

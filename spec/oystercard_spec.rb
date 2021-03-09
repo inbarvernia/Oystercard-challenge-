@@ -35,17 +35,28 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it 'set in_journey? to true' do
-      card.touch_in
-      expect(card.in_journey?).to eq(true)
-    end
-    it 'return touch-in confirmation' do
-      expect(card.touch_in).to eq("Touched in successfully")
+    context 'when equal to or above minimum balance' do
+      it 'set in_journey? to true' do
+        card.top_up(5)
+        card.touch_in
+        expect(card.in_journey?).to eq(true)
+      end
+      it 'return touch-in confirmation' do
+        card.top_up(5)
+        expect(card.touch_in).to eq("Touched in successfully")
+      end
+    end 
+    #Challenge 9
+    context 'when below the minimum balance' do
+      it "raises an error when you touch in" do
+        expect { card.touch_in }.to raise_error "Balance below minimum."
+      end
     end
   end
 
   describe '#touch_out' do
     it 'sets in_journey? to false' do
+      card.top_up(5)
       card.touch_in
       card.touch_out
       expect(card.in_journey?).to eq(false)

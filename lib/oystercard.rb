@@ -30,8 +30,12 @@ class Oystercard
   end
 
   def touch_out
+    deduct(MINIMUM_FARE)
     @in_journey = false
-    @balance -= MINIMUM_FARE  
     "Touched out successfully"
+  end
+  private  
+  def deduct(charge)
+    @balance -= charge
   end
 end

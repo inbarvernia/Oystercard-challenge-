@@ -22,11 +22,15 @@ describe Oystercard do
     end
   end
   # challenge 7
-  it 'deducts an amount from the balance of the card' do
-    # allow(card).to receive(:balance) { 50 }
-     card.top_up(50)
-    expect { card.deduct(25) }.to change { card.balance }.by(-25)
+  describe '#deduct()' do
+    context "when you tap out"
+      it 'deducts an amount from the balance' do
+      subject.top_up(20)
+      expect{ subject.deduct 3}.to change{ subject.balance }.by -3
+
+    end
   end
+
   #challenge 8
   describe '#in_journey?' do
     it 'return false when not in journey' do

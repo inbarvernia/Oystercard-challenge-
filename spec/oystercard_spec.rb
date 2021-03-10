@@ -4,6 +4,7 @@ describe Oystercard do
   let(:card) { Oystercard.new }
 
   let(:station) { double("Hackney") }
+  let(:station2) { double("Moorgate") }
 
   it 'creates a new card with a balance of 0' do
     expect(card.balance).to eq(0)
@@ -65,7 +66,7 @@ describe Oystercard do
 
 
 
-    
+
     end
     #Challenge 9
     context 'when below the minimum balance' do
@@ -81,18 +82,29 @@ describe Oystercard do
       card.touch_in(station)
     end
     it 'sets in_journey? to false' do
-      card.touch_out
+      card.touch_out(station)
       expect(card.in_journey?).to eq(false)
     end
     it 'returns touch-out confirmation' do
-      expect(card.touch_out).to eq("Touched out successfully")
+      expect(card.touch_out(station)).to eq("Touched out successfully")
     end
     it "deducts fare from balance" do
-       expect { card.touch_out }.to change { card.balance }.by(-1)
+       expect { card.touch_out(station) }.to change { card.balance }.by(-1)
     end
     it 'resets the entry_station variable to nil' do
-      card.touch_out
+      card.touch_out(station)
       expect(card.entry_station).to eq(nil)
     end
   end
-end 
+
+  it "returns an empty history" do
+    expect(card.history).to eq []
+  end
+
+  it "returns a journey history" do
+    card.top_up(5)
+    card.touch_in(station)
+    card.touch_out(station2)
+    expect(card.history[0]).to eq({ entry: station, exit: station2})
+  end
+end

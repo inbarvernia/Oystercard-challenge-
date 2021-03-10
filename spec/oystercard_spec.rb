@@ -13,7 +13,6 @@ describe Oystercard do
     context 'before reaching card limit' do
     # challenge 5: I want to top up my card
       it 'tops up the balance of the card' do
-        # allow(card).to receive(:balance) { 0 }
         expect(card.top_up(5)).to eq(5)
       end
     end
@@ -24,48 +23,35 @@ describe Oystercard do
       end
     end
   end
-  # challenge 7
-  # describe '#deduct()' do
-  #   context "when you tap out"
-  #     it 'deducts an amount from the balance' do
-  #     subject.top_up(20)
-  #     expect{ subject.deduct 3}.to change{ subject.balance }.by -3
-  #
-  #   end
-  # end
 
   #challenge 8
   describe '#in_journey?' do
+    let(:new_card) { Oystercard.new }
+
     it 'return false when not in journey' do
-      expect(card.in_journey?).to eq(false)
+      # p new_card.journey
+      # p new_card.journey[:entry]
+      # expect(new_card.in_journey?).to eq(false)
+      expect(new_card).not_to be_in_journey
     end
   end
 
   describe '#touch_in' do
     context 'when equal to or above minimum balance' do
+      let(:topped_up_card) { Oystercard.new }
+
       before(:each) do
-        @card = Oystercard.new
-        @card.top_up(5)
+        topped_up_card.top_up(5)
       end
 
       it 'set in_journey? to true' do
-
-        @card.touch_in(station)
-        expect(@card.in_journey?).to eq(true)
-      end
-
-      it 'return station name' do
-        card.top_up(5)
-        card.touch_in(station)
-        expect(card.entry_station).to eq(station)
+        topped_up_card.touch_in(station)
+        expect(topped_up_card.in_journey?).to eq(true)
       end
 
       it 'accepts an argument' do
-        expect(@card).to respond_to(:touch_in).with(1).argument
+        expect(topped_up_card).to respond_to(:touch_in).with(1).argument
       end
-
-
-
 
     end
     #Challenge 9
@@ -77,34 +63,53 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
+    let(:active_card) { Oystercard.new }
     before(:each) do
+      active_card.top_up(5)
+      active_card.touch_in(station)
+    end
+
+    it 'sets in_journey? to false' do
+      active_card.touch_out(station2)
+      # expect(active_card.in_journey?).to eq(false)
+      # p active_card.journey
+      expect(active_card).not_to be_in_journey
+    end
+    
+    it 'returns touch-out confirmation' do
+      expect(active_card.touch_out(station)).to eq("Touched out successfully")
+    end
+    
+    it "deducts fare from balance" do
+       expect { active_card.touch_out(station) }.to change { active_card.balance }.by(-1)
+    end
+  end
+
+  describe "#history" do
+    it "returns an empty history" do
+      expect(card.history).to eq []
+    end
+    
+    # Old test, no longer necessary:
+    # it 'resets the entry_station variable to nil' do
+    #   card.touch_out(station)
+    #   expect(card.entry_station).to eq(nil)
+    # end
+
+    it "returns a journey history" do
       card.top_up(5)
       card.touch_in(station)
+      card.touch_out(station2)
+      p card.history
+      p card.journey
+      expect(card.history[0]).to eq({ entry: station, exit: station2})
     end
-    it 'sets in_journey? to false' do
-      card.touch_out(station)
-      expect(card.in_journey?).to eq(false)
-    end
-    it 'returns touch-out confirmation' do
-      expect(card.touch_out(station)).to eq("Touched out successfully")
-    end
-    it "deducts fare from balance" do
-       expect { card.touch_out(station) }.to change { card.balance }.by(-1)
-    end
-    it 'resets the entry_station variable to nil' do
-      card.touch_out(station)
-      expect(card.entry_station).to eq(nil)
-    end
-  end
 
-  it "returns an empty history" do
-    expect(card.history).to eq []
-  end
-
-  it "returns a journey history" do
-    card.top_up(5)
-    card.touch_in(station)
-    card.touch_out(station2)
-    expect(card.history[0]).to eq({ entry: station, exit: station2})
+    # Older test, no longer necessary:
+    # it 'return station name' do
+    #   card.top_up(5)
+    #   card.touch_in(station)
+    #   expect(card.entry_station).to eq(station)
+    # end
   end
 end

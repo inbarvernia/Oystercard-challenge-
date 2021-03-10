@@ -1,8 +1,10 @@
 require 'oystercard'
 # challenge 3: I want to my card to have a balance
 describe Oystercard do
-  # card = Oystercard.new
   let(:card) { Oystercard.new }
+
+  let(:station) { double("Hackney") }
+
   it 'creates a new card with a balance of 0' do
     expect(card.balance).to eq(0)
   end
@@ -40,51 +42,57 @@ describe Oystercard do
 
   describe '#touch_in' do
     context 'when equal to or above minimum balance' do
-      before(:all) do
-        card.top_up(5)
+      before(:each) do
+        @card = Oystercard.new
+        @card.top_up(5)
+      end
+
       it 'set in_journey? to true' do
 
-        card.touch_in
-        expect(card.in_journey?).to eq(true)
+        @card.touch_in(station)
+        expect(@card.in_journey?).to eq(true)
       end
-      it 'return touch-in confirmation' do
 
-        expect(card.touch_in).to eq("Touched in successfully")
+      it 'return station name' do
+        card.top_up(5)
+        card.touch_in(station)
+        expect(card.entry_station).to eq(station)
       end
-    end
+
+      it 'accepts an argument' do
+        expect(@card).to respond_to(:touch_in).with(1).argument
+      end
+
+
+
+    
     end
     #Challenge 9
     context 'when below the minimum balance' do
       it "raises an error when you touch in" do
-        expect { card.touch_in }.to raise_error "Balance below minimum."
+        expect { card.touch_in(station) }.to raise_error "Balance below minimum."
       end
     end
   end
 
   describe '#touch_out' do
-      #  card.top_up(5)
-      # let(:used_card) { card.touch_in }
-      before(:all) do
-        card.top_up(5)
-        card.touch_in
+    before(:each) do
+      card.top_up(5)
+      card.touch_in(station)
+    end
     it 'sets in_journey? to false' do
-      # active_card.touch_in
-
-      # card.top_up(5)
-      # card.touch_in
       card.touch_out
       expect(card.in_journey?).to eq(false)
     end
     it 'returns touch-out confirmation' do
-      # card.top_up(5)
-      # card.touch_in
       expect(card.touch_out).to eq("Touched out successfully")
     end
-     it "deducts fare from balance" do
-       # card.top_up(5)
-       # card.touch_in
+    it "deducts fare from balance" do
        expect { card.touch_out }.to change { card.balance }.by(-1)
-     end
+    end
+    it 'resets the entry_station variable to nil' do
+      card.touch_out
+      expect(card.entry_station).to eq(nil)
+    end
   end
 end 
-end

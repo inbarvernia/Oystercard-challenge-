@@ -100,8 +100,8 @@ describe Oystercard do
       card.top_up(5)
       card.touch_in(station)
       card.touch_out(station2)
-      p card.history
-      p card.journey
+      # p card.history
+      # p card.journey
       expect(card.history[0]).to eq({ entry: station, exit: station2})
     end
 

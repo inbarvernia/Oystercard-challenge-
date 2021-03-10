@@ -46,10 +46,10 @@ private
   end
 
   def journey_to_history
-    @history << @journey
-    p @history
+    @history.push(@journey)
     # @journey = JOURNEY_TEMPLATE
-    @journey[:entry] = nil
-    @journey[:exit] = nil
+    # @journey[:entry] = nil
+    # @journey[:exit] = nil
+    @journey = { entry: nil, exit: nil }
   end
 end

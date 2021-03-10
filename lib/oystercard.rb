@@ -34,7 +34,7 @@ class Oystercard
     @in_journey = false
     "Touched out successfully"
   end
-  private  
+  
   def deduct(charge)
     @balance -= charge
   end

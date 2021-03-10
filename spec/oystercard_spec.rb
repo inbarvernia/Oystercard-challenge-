@@ -55,15 +55,29 @@ describe Oystercard do
   end
 
   describe '#touch_out' do
-      # card.top_up(5)
-      #let(:used_card) { Oystercard.new.top_up(5).touch_in }
+    # card.top_up(5)
+    #let(:used_card) { Oystercard.new.top_up(5).touch_in }
+    
+    before(:each) do
+      # active_card = double ("Oystercard")
+      # #, :balance => 10, :in_journey => true)
+      # allow(active_card).to receive(:balance).and_return(5)
+      # allow(active_card).to receive(:in_journey?).and_return(true)
+      # allow(active_card).to receive(:touch_out)
+      active_card = Oystercard.new
+      active_card.top_up(5)
+      active_card.touch_in
+      # active_card.touch_out
+    end
+
 
     it 'sets in_journey? to false' do
-      # active_card.touch_in
-      card.top_up(5)
-      card.touch_in
-      card.touch_out
-      expect(card.in_journey?).to eq(false)
+      # # active_card.touch_in
+      # card.top_up(5)
+      # card.touch_in
+      # card.touch_out
+      active_card.touch_out
+      expect(active_card.in_journey?).to eq(false)
     end
     it 'returns touch-out confirmation' do
       card.top_up(5)
